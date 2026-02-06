@@ -41,9 +41,9 @@ struct ContentView: View {
                 NavigationLink {
                     switch selection {
                     case .nequal:
-                        SingleLineLollipop(PWMTool: PWMCoeffNEQ())
+                        PWMLineLollipop(PWMTool: PWMCoeffNEQ())
                     case .equal:
-                        SingleLineLollipop(PWMTool: PWMCoeff())
+                        PWMLineLollipop(PWMTool: PWMCoeff())
                     }
                 } label: {
                     Text("2D Chart")

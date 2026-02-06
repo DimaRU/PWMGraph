@@ -1,5 +1,5 @@
 //
-//  SingleLineLollipop.swift
+//  PWMLineLollipop.swift
 //  PWMGraph
 //
 //  Created by Dmitriy Borovikov on 27/01/2026.
@@ -9,7 +9,7 @@ import Charts
 import SwiftUI
 
 
-struct SingleLineLollipop: View {
+struct PWMLineLollipop: View {
     enum PWMChannel: String {
         case warm, cold, sum
         
@@ -212,9 +212,9 @@ struct SingleLineLollipop: View {
 }
 
 #Preview("not equal", traits: .fixedLayout(width: 1000, height: 450)) {
-    SingleLineLollipop(PWMTool: PWMCoeffNEQ())
+    PWMLineLollipop(PWMTool: PWMCoeffNEQ())
 }
 
 #Preview("equal", traits: .fixedLayout(width: 1000, height: 450)) {
-    SingleLineLollipop(PWMTool: PWMCoeff())
+    PWMLineLollipop(PWMTool: PWMCoeff())
 }
