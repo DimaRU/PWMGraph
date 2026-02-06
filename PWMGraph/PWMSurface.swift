@@ -18,27 +18,27 @@ struct PWMSurface: View {
     var body: some View {
         VStack {
             Chart3D {
-                SurfacePlot(x: "x", y: "y", z: "z") { x, z in
+                SurfacePlot(x: "brightness", y: "warm", z: "temp") { x, z in
                     let x1 = x > Double(BrigthnessMax) ? Double(BrigthnessMax) : x
                     guard check(x: x1, z: z) else { return .nan }
-                    let (warmCoeff, _) = PWMTool.PWMCoeff(brightness: UInt8(x1.rounded(.down)), mireds: UInt16(z))
-                    return Double(warmCoeff)
+                    let (warm, _) = PWMTool.PWMCoeff(brightness: UInt8(x1.rounded(.down)), mireds: UInt16(z))
+                    return Double(warm)
                 }
                 .foregroundStyle(.yellow)
                 
-                SurfacePlot(x: "brightness", y: "PWM", z: "temp") { x, z in
+                SurfacePlot(x: "brightness", y: "cold", z: "temp") { x, z in
                     let x1 = x > Double(BrigthnessMax) ? Double(BrigthnessMax) : x
                     guard check(x: x1, z: z) else { return .nan }
-                    let (_, coldCoeff) = PWMTool.PWMCoeff(brightness: UInt8(x1.rounded(.down)), mireds: UInt16(z))
-                    return Double(coldCoeff)
+                    let (_, cold) = PWMTool.PWMCoeff(brightness: UInt8(x1.rounded(.down)), mireds: UInt16(z))
+                    return Double(cold)
                 }
                 .foregroundStyle(.white)
 
-                SurfacePlot(x: "brightness", y: "PWMsum", z: "temp") { x, z in
+                SurfacePlot(x: "brightness", y: "sum", z: "temp") { x, z in
                     let x1 = x > Double(BrigthnessMax) ? Double(BrigthnessMax) : x
                     guard check(x: x1, z: z) else { return .nan }
-                    let (warmCoeff, coldCoeff) = PWMTool.PWMCoeff(brightness: UInt8(x1.rounded(.down)), mireds: UInt16(z))
-                    return Double(warmCoeff + coldCoeff)
+                    let (warm, cold) = PWMTool.PWMCoeff(brightness: UInt8(x1.rounded(.down)), mireds: UInt16(z))
+                    return Double(warm + cold)
                 }
                 .foregroundStyle(.blue.opacity(0.6))
             }
@@ -68,7 +68,7 @@ struct PWMSurface: View {
                 }
             }
             .chartXAxisLabel("brightness")
-            .chartYAxisLabel("PWM", position: .leading, alignment: .leading)
+            .chartYAxisLabel("PWM", position: .automatic, alignment: .center)
             .chartZAxisLabel("temp, mireds")
             .chart3DCameraProjection(cameraProjection)
             .chart3DPose($pose)

@@ -42,11 +42,11 @@ struct PWMLineLollipop: View {
     
     
     private func getBaselineMarker(brightness: UInt8, mireds: UInt16, channel: PWMChannel) -> some ChartContent {
-        let (warmCoeff, coldCoeff) = PWMTool.PWMCoeff(brightness: brightness, mireds: mireds)
+        let (warm, cold) = PWMTool.PWMCoeff(brightness: brightness, mireds: mireds)
         let coeff = switch channel {
-        case .cold: coldCoeff
-        case .warm: warmCoeff
-        case .sum: coldCoeff + warmCoeff
+        case .cold: cold
+        case .warm: warm
+        case .sum: cold + warm
         }
         return LineMark(
             x: .value("Brightness", brightness),
@@ -137,7 +137,7 @@ struct PWMLineLollipop: View {
                         let lineHeight = geo[proxy.plotFrame!].maxY
                         let boxWidth: CGFloat = 180
                         let boxOffset = max(0, min(geo.size.width - boxWidth, lineX - boxWidth / 2))
-                        let (warmCoeff, coldCoeff) = PWMTool.PWMCoeff(brightness: selectedX, mireds: UInt16(mireds.rounded(.down)))
+                        let (warm, cold) = PWMTool.PWMCoeff(brightness: selectedX, mireds: UInt16(mireds.rounded(.down)))
 
                         Rectangle()
                             .fill(lollipopColor)
@@ -154,7 +154,7 @@ struct PWMLineLollipop: View {
                                     .font(.callout.bold())
                                     .foregroundStyle(.secondary)
                                     .gridColumnAlignment(.trailing)
-                                Text("\(warmCoeff, format: .number)")
+                                Text("\(warm, format: .number)")
                                     .font(.callout.bold().monospacedDigit())
                                     .foregroundStyle(.secondary)
                                     .gridColumnAlignment(.trailing)
@@ -166,7 +166,7 @@ struct PWMLineLollipop: View {
                                 Text("cold:")
                                     .font(.callout.bold())
                                     .foregroundStyle(.secondary)
-                                Text("\(coldCoeff, format: .number)")
+                                Text("\(cold, format: .number)")
                                     .font(.callout.bold().monospacedDigit())
                                     .foregroundStyle(.secondary)
                             }
@@ -177,7 +177,7 @@ struct PWMLineLollipop: View {
                                 Text("sum:")
                                     .font(.callout.bold())
                                     .foregroundStyle(.secondary)
-                                Text("\(coldCoeff + warmCoeff, format: .number)")
+                                Text("\(cold + warm, format: .number)")
                                     .font(.callout.bold().monospacedDigit())
                                     .foregroundStyle(.secondary)
                             }
