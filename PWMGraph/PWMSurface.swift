@@ -13,7 +13,7 @@ struct PWMSurface: View {
     nonisolated let PWMTool: PWMToolProtocol
     @State private var pose : Chart3DPose = .default
     @State private var cameraProjection: Chart3DCameraProjection = .orthographic
-    let scaleRange: [CGFloat] = [-0.65, 0.65]
+    let scaleRange: [CGFloat] = [-0.6, 0.6]
     
     var body: some View {
         VStack {
@@ -95,10 +95,10 @@ struct PWMSurface: View {
     
 }
 
-#Preview("not equal", traits: .fixedLayout(width: 1000, height: 450)) {
+#Preview("not equal", traits: .fixedLayout(width: 600, height: 500)) {
     PWMSurface(PWMTool: PWMCoeffNEQ())
 }
 
-#Preview("equal", traits: .fixedLayout(width: 1000, height: 450)) {
+#Preview("equal", traits: .fixedLayout(width: 600, height: 500)) {
     PWMSurface(PWMTool: PWMCoeff())
 }

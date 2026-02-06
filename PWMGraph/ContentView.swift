@@ -20,43 +20,44 @@ struct ContentView: View {
     
     @State var selection: PWMFuncSelection = .nequal
     var body: some View {
-        NavigationView {
-            VStack(spacing: 40) {
-                Picker("Coeff func", selection: $selection) {
-                    Text("\(PWMFuncSelection.nequal.title)").tag(PWMFuncSelection.nequal)
-                    Text("\(PWMFuncSelection.equal.title)").tag(PWMFuncSelection.equal)
-                }
-                .pickerStyle(.segmented)
-                Spacer()
-                NavigationLink {
-                    switch selection {
-                    case .nequal:
-                        PWMSurface(PWMTool: PWMCoeffNEQ())
-                    case .equal:
-                        PWMSurface(PWMTool: PWMCoeff())
-                    }
-                } label: {
-                    Text("3D Chart")
-                }
-                NavigationLink {
-                    switch selection {
-                    case .nequal:
-                        PWMLineLollipop(PWMTool: PWMCoeffNEQ())
-                    case .equal:
-                        PWMLineLollipop(PWMTool: PWMCoeff())
-                    }
-                } label: {
-                    Text("2D Chart")
-                }
-                
-                Spacer()
-
+        NavigationSplitView {
+            Text("Coeff func")
+                .font(.title3.bold())
+            Picker(selection: $selection) {
+                Text("\(PWMFuncSelection.nequal.title)").tag(PWMFuncSelection.nequal)
+                Text("\(PWMFuncSelection.equal.title)").tag(PWMFuncSelection.equal)
+            } label: {
+                EmptyView()
             }
-            .font(.title.bold())
+            .pickerStyle(.segmented)
+            Spacer()
+            NavigationLink {
+                switch selection {
+                case .nequal:
+                    PWMSurface(PWMTool: PWMCoeffNEQ())
+                case .equal:
+                    PWMSurface(PWMTool: PWMCoeff())
+                }
+            } label: {
+                Text("3D Chart")
+            }
+            NavigationLink {
+                switch selection {
+                case .nequal:
+                    PWMLineLollipop(PWMTool: PWMCoeffNEQ())
+                case .equal:
+                    PWMLineLollipop(PWMTool: PWMCoeff())
+                }
+            } label: {
+                Text("2D Chart")
+            }
+            Spacer()
+        } detail: {
         }
+
     }
 }
 
-#Preview {
+#Preview("ContentView", traits: .fixedLayout(width: 700, height: 500)) {
     ContentView()
 }
