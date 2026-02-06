@@ -13,5 +13,6 @@ struct PWMGraphApp: App {
         WindowGroup {
             ContentView()
         }
+        .windowStyle(.hiddenTitleBar)
     }
 }
