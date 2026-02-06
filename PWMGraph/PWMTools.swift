@@ -19,14 +19,15 @@ protocol PWMToolProtocol: AnyObject {
     nonisolated var PWMSum: UInt32 { get }
 }
 
+nonisolated
 class PWMCoeffNEQ: PWMToolProtocol {
     let topMargin: UInt32 = 2
-    nonisolated let PWMBase: UInt32 = 4096
-    nonisolated var PWMSum: UInt32 {
+    let PWMBase: UInt32 = 4096
+    var PWMSum: UInt32 {
         PWMBase * topMargin
     }
     
-    nonisolated func PWMCoeff(brightness: UInt8, mireds: UInt16) -> (warm: UInt32, cold: UInt32) {
+    func PWMCoeff(brightness: UInt8, mireds: UInt16) -> (warm: UInt32, cold: UInt32) {
         let miredsNeutral = (MiredsWarm + MiredsCold) / 2
         let tempCoeff = UInt32(mireds - MiredsCold) * PWMBase / UInt32(MiredsWarm - MiredsCold)
         let brightnessCoeff = UInt32(brightness) * PWMBase / UInt32(BrigthnessMax)
@@ -41,13 +42,14 @@ class PWMCoeffNEQ: PWMToolProtocol {
     }
 }
 
+nonisolated
 class PWMCoeff: PWMToolProtocol {
-    nonisolated let PWMBase: UInt32 = 4096
-    nonisolated var PWMSum: UInt32 {
+    let PWMBase: UInt32 = 4096
+    var PWMSum: UInt32 {
         PWMBase
     }
     
-    nonisolated func PWMCoeff(brightness: UInt8, mireds: UInt16) -> (warm: UInt32, cold: UInt32) {
+    func PWMCoeff(brightness: UInt8, mireds: UInt16) -> (warm: UInt32, cold: UInt32) {
         let tempCoeff = UInt32(mireds - MiredsCold) * PWMBase / UInt32(MiredsWarm - MiredsCold)
         let brightnessCoeff = UInt32(brightness) * PWMBase / UInt32(BrigthnessMax)
 
@@ -57,15 +59,15 @@ class PWMCoeff: PWMToolProtocol {
     }
 }
 
-
+nonisolated
 class PWMCoeffOld: PWMToolProtocol {
     let topMargin: UInt32 = 2
-    nonisolated let PWMBase: UInt32 = 4096
-    nonisolated var PWMSum: UInt32 {
+    let PWMBase: UInt32 = 4096
+    var PWMSum: UInt32 {
         PWMBase * topMargin
     }
     
-    nonisolated func PWMCoeff(brightness: UInt8, mireds: UInt16) -> (warm: UInt32, cold: UInt32) {
+    func PWMCoeff(brightness: UInt8, mireds: UInt16) -> (warm: UInt32, cold: UInt32) {
         let topMargin: UInt32 = 2
         let tempCoeff = UInt32(mireds - MiredsCold) * PWMBase / UInt32(MiredsWarm - MiredsCold) * topMargin
         let brightnessCoeff = UInt32(brightness) * PWMBase / UInt32(BrigthnessMax)
@@ -79,5 +81,66 @@ class PWMCoeffOld: PWMToolProtocol {
             cold = PWMBase
         }
         return (warm, cold)
+    }
+}
+
+nonisolated
+class PWMCoeffNEQ_cie1931: PWMToolProtocol {
+    let topMargin: UInt32 = 2
+    let PWMBase: UInt32 = 4096
+    var PWMSum: UInt32 {
+        PWMBase * topMargin
+    }
+    private let lightnessBase: UInt32 = 2000
+    private var cieTable: [UInt32] = []
+    
+    init() {
+        for index in 0...lightnessBase {
+            let lightness = Double(index) / Double(lightnessBase)
+            let coeff = cie1931(lightness: lightness) * Double(PWMBase)
+            cieTable.append(UInt32(coeff))
+        }
+    }
+    
+    func PWMCoeff(brightness: UInt8, mireds: UInt16) -> (warm: UInt32, cold: UInt32) {
+        let miredsNeutral = (MiredsWarm + MiredsCold) / 2
+        let tempCoeff = UInt32(mireds - MiredsCold) * lightnessBase / UInt32(MiredsWarm - MiredsCold)
+        let brightnessCoeff = UInt32(brightness) * lightnessBase / UInt32(BrigthnessMax)
+        
+        if mireds >= miredsNeutral {
+            let cold = topMargin * (lightnessBase - tempCoeff) * brightnessCoeff / lightnessBase
+            return (cieTable[Int(brightnessCoeff)], cieTable[Int(cold)])
+        } else {
+            let warm = topMargin * tempCoeff * brightnessCoeff / lightnessBase
+            return (cieTable[Int(warm)], cieTable[Int(brightnessCoeff)])
+        }
+    }
+}
+
+nonisolated
+class PWMCoeff_cie1931: PWMToolProtocol {
+    nonisolated let PWMBase: UInt32 = 4096
+    nonisolated var PWMSum: UInt32 {
+        PWMBase
+    }
+    
+    private let lightnessBase: UInt32 = 2000
+    private var cieTable: [UInt32] = []
+    
+    init() {
+        for index in 0...lightnessBase {
+            let lightness = Double(index) / Double(lightnessBase)
+            let coeff = cie1931(lightness: lightness) * Double(PWMBase)
+            cieTable.append(UInt32(coeff))
+        }
+    }
+
+    nonisolated func PWMCoeff(brightness: UInt8, mireds: UInt16) -> (warm: UInt32, cold: UInt32) {
+        let tempCoeff = UInt32(mireds - MiredsCold) * lightnessBase / UInt32(MiredsWarm - MiredsCold)
+        let brightnessCoeff = UInt32(brightness) * lightnessBase / UInt32(BrigthnessMax)
+
+        let warm = tempCoeff * brightnessCoeff / lightnessBase
+        let cold = (lightnessBase - tempCoeff) * brightnessCoeff / lightnessBase
+        return (cieTable[Int(warm)], cieTable[Int(cold)])
     }
 }

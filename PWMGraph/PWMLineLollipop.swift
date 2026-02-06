@@ -204,10 +204,11 @@ struct PWMLineLollipop: View {
     
     private func findElement(location: CGPoint, proxy: ChartProxy, geometry: GeometryProxy) -> UInt8? {
         let relativeXPosition = location.x - geometry[proxy.plotFrame!].origin.x
+        guard relativeXPosition >= 0 else { return 0 }
         guard
             let value = proxy.value(atX: relativeXPosition) as UInt32?,
             value <= BrigthnessMax
-        else { return nil}
+        else { return BrigthnessMax}
         return UInt8(value)
     }
 }

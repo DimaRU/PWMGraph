@@ -18,7 +18,9 @@ struct ContentView: View {
         }
     }
     
-    @State var selection: PWMFuncSelection = .nequal
+    @State private var selection: PWMFuncSelection = .nequal
+    @State private var cie1931: Bool = false
+    
     var body: some View {
         NavigationSplitView {
             Text("Coeff func")
@@ -30,23 +32,28 @@ struct ContentView: View {
                 EmptyView()
             }
             .pickerStyle(.segmented)
+            
+            Toggle(isOn: $cie1931) {
+                Text("cie1931")
+            }
+            
             Spacer()
             NavigationLink {
-                switch selection {
-                case .nequal:
-                    PWMSurface(PWMTool: PWMCoeffNEQ())
-                case .equal:
-                    PWMSurface(PWMTool: PWMCoeff())
+                switch (selection, cie1931) {
+                case (.nequal, false): PWMSurface(PWMTool: PWMCoeffNEQ())
+                case (.nequal, true):  PWMSurface(PWMTool: PWMCoeffNEQ_cie1931())
+                case (.equal, false):  PWMSurface(PWMTool: PWMCoeff())
+                case (.equal, true):   PWMSurface(PWMTool: PWMCoeff_cie1931())
                 }
             } label: {
                 Text("3D Chart")
             }
             NavigationLink {
-                switch selection {
-                case .nequal:
-                    PWMLineLollipop(PWMTool: PWMCoeffNEQ())
-                case .equal:
-                    PWMLineLollipop(PWMTool: PWMCoeff())
+                switch (selection, cie1931) {
+                case (.nequal, false): PWMLineLollipop(PWMTool: PWMCoeffNEQ())
+                case (.nequal, true):  PWMLineLollipop(PWMTool: PWMCoeffNEQ_cie1931())
+                case (.equal, false):  PWMLineLollipop(PWMTool: PWMCoeff())
+                case (.equal, true):   PWMLineLollipop(PWMTool: PWMCoeff_cie1931())
                 }
             } label: {
                 Text("2D Chart")
