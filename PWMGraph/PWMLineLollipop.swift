@@ -147,37 +147,38 @@ struct PWMLineLollipop: View {
                         Grid(horizontalSpacing: 15) {
                             GridRow {
                                 Text("b: \(selectedX)")
-                                    .font(.title3.bold())
+                                    .font(.title3.bold().monospaced())
                                     .foregroundColor(.primary)
-                                    .gridColumnAlignment(.trailing)
+                                    .gridColumnAlignment(.leading)
                                 Text("warm:")
                                     .font(.callout.bold())
                                     .foregroundStyle(.secondary)
-                                    .gridColumnAlignment(.leading)
+                                    .gridColumnAlignment(.trailing)
                                 Text("\(warmCoeff, format: .number)")
-                                    .font(.callout.bold())
+                                    .font(.callout.bold().monospacedDigit())
                                     .foregroundStyle(.secondary)
                                     .gridColumnAlignment(.trailing)
                             }
                             GridRow {
                                 Text("t: \(UInt16(mireds.rounded(.down)))")
-                                    .font(.title3.bold())
+                                    .font(.title3.bold().monospaced())
                                     .foregroundColor(.primary)
                                 Text("cold:")
                                     .font(.callout.bold())
                                     .foregroundStyle(.secondary)
                                 Text("\(coldCoeff, format: .number)")
-                                    .font(.callout.bold())
+                                    .font(.callout.bold().monospacedDigit())
                                     .foregroundStyle(.secondary)
                             }
-                            GridRow {
-                                Color.clear
-                                    .gridCellUnsizedAxes([.horizontal, .vertical])
+                            GridRow(alignment: .top) {
+                                Text(" ")
+                                    .font(.title3.bold())
+                                    .foregroundColor(.primary)
                                 Text("sum:")
                                     .font(.callout.bold())
                                     .foregroundStyle(.secondary)
                                 Text("\(coldCoeff + warmCoeff, format: .number)")
-                                    .font(.callout.bold())
+                                    .font(.callout.bold().monospacedDigit())
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -211,10 +212,10 @@ struct PWMLineLollipop: View {
     }
 }
 
-#Preview("not equal", traits: .fixedLayout(width: 1000, height: 450)) {
+#Preview("not equal", traits: .fixedLayout(width: 1000, height: 500)) {
     PWMLineLollipop(PWMTool: PWMCoeffNEQ())
 }
 
-#Preview("equal", traits: .fixedLayout(width: 1000, height: 450)) {
+#Preview("equal", traits: .fixedLayout(width: 1000, height: 500)) {
     PWMLineLollipop(PWMTool: PWMCoeff())
 }
