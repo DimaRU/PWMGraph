@@ -144,3 +144,32 @@ class PWMCoeff_cie1931: PWMToolProtocol {
         return (cieTable[Int(warm)], cieTable[Int(cold)])
     }
 }
+
+nonisolated
+class PWMEQ_cie1931: PWMToolProtocol {
+    nonisolated let PWMBase: UInt32 = 4096
+    nonisolated var PWMSum: UInt32 {
+        PWMBase
+    }
+    
+    private let precisionBase: UInt32 = 1000
+    private var cieTable: [UInt32] = []
+    
+    init() {
+        for index in 0...BrigthnessMax {
+            let lightness = Double(index) / Double(BrigthnessMax)
+            let coeff = cie1931(lightness: lightness) * Double(precisionBase)
+            cieTable.append(UInt32(coeff))
+        }
+        print(cieTable)
+    }
+
+    nonisolated func PWMCoeff(brightness: UInt8, mireds: UInt16) -> (warm: UInt32, cold: UInt32) {
+        let tempCoeff = UInt32(mireds - MiredsCold) * precisionBase / UInt32(MiredsWarm - MiredsCold)
+        let brightnessCoeff = cieTable[Int(brightness)]
+
+        let warm = tempCoeff * brightnessCoeff / precisionBase * PWMBase / precisionBase
+        let cold = (precisionBase - tempCoeff) * brightnessCoeff / precisionBase * PWMBase / precisionBase
+        return (warm, cold)
+    }
+}

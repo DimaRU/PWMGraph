@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
-    enum PWMFuncSelection {
-        case nequal, equal, nequal_cie1931, equal_cie1931
+    enum PWMFuncSelection: CaseIterable {
+        case nequal, equal, nequal_cie1931, equal_cie1931, equal1_cie1931
         var title: String {
             return switch self {
             case .nequal: "nonequal"
             case .equal: "equal"
             case .nequal_cie1931: "nequal-cie1931"
             case .equal_cie1931: "equal-cie1931"
+            case .equal1_cie1931: "equal1-cie1931"
             }
         }
         
@@ -25,6 +26,7 @@ struct ContentView: View {
             case .equal: PWMCoeff()
             case .nequal_cie1931: PWMCoeffNEQ_cie1931()
             case .equal_cie1931: PWMCoeff_cie1931()
+            case .equal1_cie1931: PWMEQ_cie1931()
             }
         }
     }
@@ -36,11 +38,9 @@ struct ContentView: View {
             Text("Coeff func")
                 .font(.title3.bold())
             Picker(selection: $selection) {
-                Text("\(PWMFuncSelection.nequal.title)").tag(PWMFuncSelection.nequal)
-                Text("\(PWMFuncSelection.equal.title)").tag(PWMFuncSelection.equal)
-                Text("\(PWMFuncSelection.nequal_cie1931.title)").tag(PWMFuncSelection.nequal_cie1931)
-                Text("\(PWMFuncSelection.equal_cie1931.title)").tag(PWMFuncSelection.equal_cie1931)
-
+                ForEach(PWMFuncSelection.allCases, id: \.self) { pwmTool in
+                    Text(pwmTool.title).tag(pwmTool)
+                }
             } label: {
                 EmptyView()
             }
