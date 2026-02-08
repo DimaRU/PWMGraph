@@ -18,7 +18,7 @@ struct TemperatureSlider: View {
                 in: Float(MiredsCold)...Float(MiredsWarm),
                 neutralValue: Float(MiredsCold) + Float(MiredsWarm - MiredsCold) / 2
             ) {
-                Text("Temp")
+                EmptyView()
             } currentValueLabel: {
                 Text("Temp: \(UInt16(mireds.rounded(.down)))")
             } minimumValueLabel: {

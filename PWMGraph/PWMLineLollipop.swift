@@ -78,7 +78,7 @@ struct PWMLineLollipop: View {
                 let baselineMarker = getBaselineMarker(brightness: brigthness, mireds: UInt16(mireds.rounded(.down)), channel: .cold)
                 if (selectedX == brigthness) && showLollipop {
                     baselineMarker.symbol() {
-                        Circle().strokeBorder(.red, lineWidth: 2).background(Circle().foregroundColor(lollipopColor)).frame(width: 11)
+                        Circle().strokeBorder(.red, lineWidth: 2).background(Circle().foregroundColor(.white)).frame(width: 11)
                     }
                 } else {
                     baselineMarker.symbol(Circle().strokeBorder(lineWidth: lineWidth))
@@ -90,7 +90,7 @@ struct PWMLineLollipop: View {
                 let baselineMarker = getBaselineMarker(brightness: brigthness, mireds: UInt16(mireds.rounded(.down)), channel: .warm)
                 if (selectedX == brigthness) && showLollipop {
                     baselineMarker.symbol() {
-                        Circle().strokeBorder(.red, lineWidth: 2).background(Circle().foregroundColor(lollipopColor)).frame(width: 11)
+                        Circle().strokeBorder(.red, lineWidth: 2).background(Circle().foregroundColor(.yellow)).frame(width: 11)
                     }
                 } else {
                     baselineMarker.symbol(Circle().strokeBorder(lineWidth: lineWidth))
@@ -98,8 +98,6 @@ struct PWMLineLollipop: View {
             }
 
         }
-        .chartXScale(domain: brigthnessRange)
-        .chartYScale(domain: [0, PWMTool.PWMSum])
 
         // Gesture lolipop
         .chartOverlay { proxy in
@@ -135,14 +133,14 @@ struct PWMLineLollipop: View {
                         
                         let lineX = startPositionX1 + geo[proxy.plotFrame!].origin.x
                         let lineHeight = geo[proxy.plotFrame!].maxY
-                        let boxWidth: CGFloat = 180
+                        let boxWidth: CGFloat = 160
                         let boxOffset = max(0, min(geo.size.width - boxWidth, lineX - boxWidth / 2))
                         let (warm, cold) = PWMTool.PWMCoeff(brightness: selectedX, mireds: UInt16(mireds.rounded(.down)))
 
                         Rectangle()
                             .fill(lollipopColor)
-                            .frame(width: 2, height: lineHeight)
-                            .position(x: lineX, y: lineHeight / 2)
+                            .frame(width: 2, height: lineHeight - 10)
+                            .position(x: lineX, y: (lineHeight / 2) + 10)
                         
                         Grid(horizontalSpacing: 15) {
                             GridRow {
@@ -193,12 +191,22 @@ struct PWMLineLollipop: View {
                             .padding(.horizontal, -8)
                             .padding(.vertical, -4)
                         }
-                        .offset(x: boxOffset, y: 10)
+                        .offset(x: boxOffset, y: 25)
                     }
                 }
             }
         }
-        .chartXAxis(.automatic)
+        .chartXScale(domain: brigthnessRange)
+        .chartYScale(domain: [0, PWMTool.PWMSum])
+
+        .chartXAxis {
+            AxisMarks(preset: .aligned, position: .top, values: .stride(by: 16)) { value in
+                AxisGridLine()
+                AxisTick()
+                AxisValueLabel(format: Decimal.FormatStyle.number, verticalSpacing: 5)
+                    .foregroundStyle(value.index == value.count / 2 ? .red  : .black)
+            }
+        }
         .chartYAxis(.automatic)
     }
     
