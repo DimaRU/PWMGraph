@@ -13,6 +13,8 @@ struct PWMGraphApp: App {
         WindowGroup {
             ContentView()
         }
+#if os(macOS)
         .windowStyle(.hiddenTitleBar)
+#endif
     }
 }

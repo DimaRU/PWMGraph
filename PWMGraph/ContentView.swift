@@ -44,7 +44,11 @@ struct ContentView: View {
             } label: {
                 EmptyView()
             }
+            #if os(macOS)
             .pickerStyle(.radioGroup)
+            #else
+            .pickerStyle(.wheel)
+            #endif
             
             
             Spacer()
@@ -53,12 +57,14 @@ struct ContentView: View {
             } label: {
                 Text("2D Chart")
                     .font(.title3.bold())
+                    .padding()
             }
             NavigationLink {
                 PWMSurface(PWMTool: selection.tool)
             } label: {
                 Text("3D Chart")
                     .font(.title3.bold())
+                    .padding()
             }
             Spacer()
         } detail: {
