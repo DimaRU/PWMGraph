@@ -68,6 +68,25 @@ class PWMCoeff: PWMToolProtocol {
 }
 
 nonisolated
+class PWMCoeffMinus: PWMToolProtocol {
+    let PWMmax: UInt32 = 4096 * 97 / 100
+    let PWMBase: UInt32 = 4096
+    var PWMSum: UInt32 {
+        PWMBase
+    }
+    
+    func PWMCoeff(brightness: UInt8, mireds: UInt16) -> (warm: UInt32, cold: UInt32) {
+        let tempCoeff = UInt32(mireds - MiredsCold) * PWMmax / UInt32(MiredsWarm - MiredsCold)
+        let brightnessCoeff = UInt32(brightness) * PWMmax / UInt32(BrigthnessMax)
+
+        let warm = tempCoeff * brightnessCoeff / PWMmax
+        let cold = (PWMmax - tempCoeff) * brightnessCoeff / PWMmax
+        return (warm, cold)
+    }
+}
+
+
+nonisolated
 class PWMCoeffOld: PWMToolProtocol {
     let topMargin: UInt32 = 2
     let PWMBase: UInt32 = 4096
