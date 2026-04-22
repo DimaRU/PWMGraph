@@ -133,9 +133,10 @@ struct PWMLineLollipop: View {
                         
                         let lineX = startPositionX1 + geo[proxy.plotFrame!].origin.x
                         let lineHeight = geo[proxy.plotFrame!].maxY
-                        let boxWidth: CGFloat = 160
+                        let boxWidth: CGFloat = 210
                         let boxOffset = max(0, min(geo.size.width - boxWidth, lineX - boxWidth / 2))
                         let (warm, cold) = PWMTool.PWMCoeff(brightness: selectedX, mireds: UInt16(mireds.rounded(.down)))
+                        let (warmp, coldp) = PWMTool.PWMPercent(brightness: selectedX, mireds: UInt16(mireds.rounded(.down)))
 
                         Rectangle()
                             .fill(lollipopColor)
@@ -156,6 +157,10 @@ struct PWMLineLollipop: View {
                                     .font(.callout.bold().monospacedDigit())
                                     .foregroundStyle(.secondary)
                                     .gridColumnAlignment(.trailing)
+                                Text("\(warmp, format: .percent)")
+                                    .font(.callout.bold().monospacedDigit())
+                                    .foregroundStyle(.secondary)
+                                    .gridColumnAlignment(.trailing)
                             }
                             GridRow {
                                 Text("t: \(UInt16(mireds.rounded(.down)))")
@@ -167,6 +172,9 @@ struct PWMLineLollipop: View {
                                 Text("\(cold, format: .number)")
                                     .font(.callout.bold().monospacedDigit())
                                     .foregroundStyle(.secondary)
+                                Text("\(coldp, format: .percent)")
+                                    .font(.callout.bold().monospacedDigit())
+                                    .foregroundStyle(.secondary)
                             }
                             GridRow(alignment: .top) {
                                 Text(" ")
@@ -176,6 +184,9 @@ struct PWMLineLollipop: View {
                                     .font(.callout.bold())
                                     .foregroundStyle(.secondary)
                                 Text("\(cold + warm, format: .number)")
+                                    .font(.callout.bold().monospacedDigit())
+                                    .foregroundStyle(.secondary)
+                                Text("\(coldp + warmp, format: .percent)")
                                     .font(.callout.bold().monospacedDigit())
                                     .foregroundStyle(.secondary)
                             }

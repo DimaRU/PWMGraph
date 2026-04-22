@@ -15,8 +15,16 @@ nonisolated let BrigthnessMin: UInt8 = 0
 
 protocol PWMToolProtocol: AnyObject {
     nonisolated func PWMCoeff(brightness: UInt8, mireds: UInt16) -> (warm: UInt32, cold: UInt32)
+    nonisolated func PWMPercent(brightness: UInt8, mireds: UInt16) -> (warm: UInt32, cold: UInt32)
     nonisolated var PWMBase: UInt32 { get }
     nonisolated var PWMSum: UInt32 { get }
+}
+
+extension PWMToolProtocol {
+    func PWMPercent(brightness: UInt8, mireds: UInt16) -> (warm: UInt32, cold: UInt32) {
+        let (warm, cold) = PWMCoeff(brightness: brightness, mireds: mireds)
+        return (warm * 100 / PWMBase, cold * 100 / PWMBase)
+    }
 }
 
 nonisolated
