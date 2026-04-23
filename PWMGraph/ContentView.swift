@@ -9,15 +9,16 @@ import SwiftUI
 
 struct ContentView: View {
     enum PWMFuncSelection: CaseIterable {
-        case nequal, equal, eqminus, nequal_cie1931, equal_cie1931, equal1_cie1931
+        case nequal, equal, eqminus, nequal_cie1931, equal_cie1931, equal1_cie1931, equal2_cie1931
         var title: String {
             return switch self {
             case .nequal: "nonequal"
             case .equal: "equal"
-            case .eqminus: "eq-"
+            case .eqminus: "equal-m"
             case .nequal_cie1931: "nequal-cie1931"
             case .equal_cie1931: "equal-cie1931"
             case .equal1_cie1931: "equal1-cie1931"
+            case .equal2_cie1931: "equal2-cie1931"
             }
         }
         
@@ -29,6 +30,7 @@ struct ContentView: View {
             case .nequal_cie1931: PWMCoeffNEQ_cie1931()
             case .equal_cie1931: PWMCoeff_cie1931()
             case .equal1_cie1931: PWMEQ_cie1931()
+            case .equal2_cie1931: PWMEQ2_cie1931()
             }
         }
     }
